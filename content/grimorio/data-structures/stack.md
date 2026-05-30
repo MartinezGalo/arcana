@@ -1,9 +1,11 @@
 ---
-title: 'Pila (Stack)'
-tags: ['data-structures']
-alias: ['stack', 'pila']
+title: Stack
+tags:
+  - data-structures
+alias:
+  - stack
+  - pila
 ---
-
 ## 1. Qué es y cómo funciona
 
 ### Intuición

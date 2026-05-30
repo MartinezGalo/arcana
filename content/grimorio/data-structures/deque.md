@@ -1,9 +1,11 @@
 ---
-title: 'Deque (Double-ended Queue)'
-tags: ['data-structures', 'template']
-alias: ['Deque', 'Double-ended queue']
+title: Deque
+tags:
+  - data-structures
+alias:
+  - Deque
+  - Double-ended queue
 ---
-
 ## 1. Qué es y cómo funciona
 ### Intuición
 Un deque (pronunciado "deck", acrónimo de Double-Ended Queue) es un tipo especial de estructura de datos que permite añadir y eliminar elementos de ambos extremos de forma eficiente. Resuelve problemas donde se necesita la flexibilidad de una pila y una cola simultáneamente.
@@ -15,7 +17,7 @@ Un deque (pronunciado "deck", acrónimo de Double-Ended Queue) es un tipo especi
 ### Representación
 Internamente, se organiza como una secuencia de nodos o bloques. A diferencia de una Pila, que tiene un solo "techo", el Deque se visualiza como un tubo abierto en ambos sentidos.
 
-![Representación del deque](/content/attachments/grimorio/data-structures/deque.svg)
+![Representación del deque](deque.svg)
 
 ## 2. Operaciones y complejidad
 ### Operaciones principales

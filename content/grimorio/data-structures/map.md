@@ -1,7 +1,13 @@
 ---
-title: 'Mapa / Diccionario (Map)'
-tags: ['data-structures']
-alias: ['map', 'dictionary', 'mapa', 'diccionario', 'hashmap', 'tabla-de-dispersion']
+title: Map
+tags:
+  - data-structures
+alias:
+  - map
+  - dictionary
+  - mapa
+  - diccionario
+  - hashmap
 ---
 ## 1. Qué es y cómo funciona
 

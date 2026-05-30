@@ -1,9 +1,11 @@
 ---
-title: 'Estructura (Struct / Record)'
-tags: ['data-structures']
-alias: ['record', 'struct']
+title: Struct
+tags:
+  - data-structures
+alias:
+  - record
+  - struct
 ---
-
 ## 1. Qué es y cómo funciona
 ### Intuición
 Usar variables sueltas o arreglos paralelos es propenso a errores y muy difícil de mantener a largo plazo. La información está muy dispersa. La idea central de un Record/Struct es agrupar lógicamente datos relacionados que pueden ser de distintos tipos bajo un único nombre, tratándolos como una sola unidad.
@@ -20,11 +22,11 @@ Un Struct / Record es un tipo de dato compuesto que agrupa un número fijo de ca
 
 Esta es una representación sencilla de estructura:
 
-![](/attachments/grimorio/data-structures/estructura-cuadro.svg)
+![](estructura%20cuadro.svg)
 
 En Python, los objetos por defecto usan un diccionario interno dinámico para guardar atributos. Para lograr la representación real de un Struct en Python, se utiliza el campo `slots`. Internamente, la estructura se convierte en un arreglo estricto de referencias (punteros) a los valores en memoria, eliminando el diccionario.
  
-![](/attachments/grimorio/data-structures/estructura-python.svg)
+![](estructura%20python.svg)
 
 ---
  

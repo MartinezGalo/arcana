@@ -1,9 +1,11 @@
 ---
-title: "Arreglo (Array)"
-tags: ["data-structures"]
-alias: ["array", "arreglo"]
+title: Array
+tags:
+  - data-structures
+alias:
+  - array
+  - arreglo
 ---
-
 ## 1. Qué es y cómo funciona
 
 ### Intuición

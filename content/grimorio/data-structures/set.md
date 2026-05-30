@@ -1,26 +1,11 @@
 ---
-title: 'Conjunto (Set)'
-tags: ['data-structures']
-alias: ['set', 'conjunto']
+title: Set
+tags:
+  - data-structures
+alias:
+  - set
+  - conjunto
 ---
-
-# Conjunto (Set)
-
-> **Estructura de datos**: colección de elementos únicos y no ordenados, basada en la noción matemática de conjunto.
-
----
-
-## Tabla de Contenidos
-
-1. [Qué es y cómo funciona](#1-qué-es-y-cómo-funciona)
-2. [Operaciones y complejidad](#2-operaciones-y-complejidad)
-3. [Implementación](#3-implementación)
-4. [Uso y criterio](#4-uso-y-criterio)
-5. [Relaciones y extensiones](#5-relaciones-y-extensiones)
-6. [Referencias y recursos](#6-referencias-y-recursos)
-
----
-
 ## 1. Qué es y cómo funciona
 
 ### Intuición
@@ -53,7 +38,7 @@ Python implementa su `set` con una **tabla hash de direccionamiento abierto**. I
 
 **Diagrama de una tabla hash con 8 slots:**
 
-![](/attachments/grimorio/data-structures/hashSet.svg)
+![](hashset.svg)
 
 `hash("ab") % 8 = 1` | `hash("xy") % 8 = 3` | `hash("cd") % 8 = 5` | `hash("hi") % 8 = 7`
 

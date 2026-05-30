@@ -1,11 +1,12 @@
 ---
-title: 'String (Cadena)'
-tags: ['data-structures']
-alias: ['string', 'cadena', 'cadena de caracteres']
+title: String
+tags:
+  - data-structures
+alias:
+  - string
+  - cadena
+  - cadena de caracteres
 ---
-
-# String (Cadena)
-
 ## 1. Qué es y cómo funciona
 
 ### Intuición
@@ -65,7 +66,7 @@ La forma más común de representar un string es como un **arreglo (array) conti
 
 Ejemplo: `"hola"`
 
-![Representación en memoria de "hola"](/attachments/grimorio/data-structures/string-hola-array.svg)
+![Representación en memoria de "hola"](string%20hola%20array.svg)
 
 Esto permite:
 
@@ -74,13 +75,13 @@ Esto permite:
 
 En lenguajes como C, además, se utiliza un carácter especial de terminación (`'\0'`):
 
-![Representación en memoria de "hola" con terminador nulo](/attachments/grimorio/data-structures/string-hola-null.svg)
+![Representación en memoria de "hola" con terminador nulo](string%20hola%20null.svg)
 
 #### Ilustración
 
 String: `"chat"`
 
-![Ilustración del string "chat" con índices y contenido](/attachments/grimorio/data-structures/string-chat.svg)
+![Ilustración del string "chat" con índices y contenido](string%20chat.svg)
 
 #### Variantes de representación
 

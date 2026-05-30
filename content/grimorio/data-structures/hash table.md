@@ -1,10 +1,12 @@
 ---
-title: 'Tabla Hash (Hash Table)'
-tags: ['data-structures']
-alias: ['hash table', 'tabla hash']
+title: Hash Table
+tags:
+  - data-structures
+alias:
+  - hash table
+  - tabla hash
 ---
-
-## 1. ¿Qué es y cómo funciona?
+## 1. Qué es y cómo funciona
 
 ### Intuición
 Una tabla hash funciona como un conjunto de cajones numerados donde, mediante una fórmula (función hash), cada elemento se guarda y se busca directamente en una posición específica sin recorrer toda la estructura.
@@ -36,7 +38,7 @@ Permite búsquedas, inserciones y eliminaciones eficientes usando una función h
 Una **colisión** ocurre cuando dos claves distintas generan el mismo índice en la tabla hash. Es inevitable y debe resolverse con técnicas específicas.
 
 ### Representación
-![Muestra](/content/attachments/grimorio/data-structures/hash_table.svg)
+![Muestra](hashtable.svg)
 
 Se implementa generalmente sobre **vectores unidimensionales**, aunque rara vez sobre matrices (dependiendo de la cantidad de componentes de la clave). La función hash, a partir de la clave en formato String que le demos, en este caso “abel”, nos dará el índice del vector en el que se guardará el valor. En caso de colisión, se usan listas, árboles o direccionamiento abierto. 
 

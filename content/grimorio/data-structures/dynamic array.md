@@ -1,13 +1,12 @@
 ---
-title: Array dinámico
+title: Dynamic Array
 tags:
   - data-structures
 aliases:
   - dynamic array
   - arreglo dinámico
 ---
-
-## ¿Qué es y cómo funciona?
+## 1. Qué es y cómo funciona
 
 ### Intuición
 
@@ -33,13 +32,13 @@ El simple redimensiona al llenarse y es óptimo para agregar al final, pero inse
 
 #### Array dinámico
 
-![Array dinámico](imagenes/array_simple.svg)
+![Array dinámico](array%20simple.svg)
 
 #### Array circular dinámico
 
-![Array dinámico](imagenes/array_circular.svg)
+![Array dinámico](array%20circular.svg)
 
-## Operaciones y complejidad
+## 2. Operaciones y complejidad
 
 ### Operaciones principales
 
@@ -76,7 +75,7 @@ La redimensión ocurre cuando `size == capacidad` y cuesta O(n) → por eso se d
 
 El array circular evita desplazamientos en los extremos con aritmética modular: el índice físico de la posición lógica `i` es `(inicio + i) % capacidad`. El precio es un problema de ambigüedad: si `inicio == fin`, ¿el array está vacío o lleno? La solución estándar es sacrificar una celda o mantener un contador separado.
 
-## Implementación
+## 3. Implementación
 
 ### Idea de implementación
 
@@ -147,7 +146,7 @@ for i in range(arr.size):
     print(arr.array[i]) # 10, 15, 30
 ```
 
-## Cuándo Usar un Array Dinámico
+## 4. Cuándo Usar un Array Dinámico
 
 ### Casos de uso
 
@@ -185,7 +184,7 @@ for i in range(arr.size):
 - _"Se agrega continuamente al final"_
 - _"Se recorre constantemente"_
 
-## Relaciones y Extensiones
+## 5. Relaciones y Extensiones
 
 ### Variantes
 
@@ -205,7 +204,7 @@ Es la base de `ArrayList` (Java), `vector` (C++) y `list` (Python). Puede usarse
 
 **Concurrencia**: un resize mientras otro hilo itera produce comportamiento indefinido. La alternativa habitual son estructuras segmentadas ([ConcurrentVector](https://learn.microsoft.com/en-us/cpp/parallel/concrt/reference/concurrent-vector-class?view=msvc-170)) que evitan mover toda la memoria.
 
-## Referencias
+## 6. Referencias
 
 - [**Complejidad computacional de problemas y el análisis y diseño de algoritmos**](https://gc.scalahed.com/recursos/files/r161r/w25152w/Semana1/recursos/elisa.pdf). Elisa Schaeffer, 2008.
 - **Documentación sobre operaciones de ArrayList en Java**: [Java ArrayList](https://www.w3schools.com/java/java_arraylist.asp)
@@ -217,5 +216,5 @@ Es la base de `ArrayList` (Java), `vector` (C++) y `list` (Python). Puede usarse
   - [_Implementation of Dynamic Array in Python_](https://www.geeksforgeeks.org/python/implementation-of-dynamic-array-in-python/)
 - [**Aprenderaprogramar.com.** \_Arrays (arreglos) dinámicos y arrays estáticos](https://www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=162:arrays-arreglos-dinamicos-y-arrays-estaticos-definicion-declaracion-ejemplos-en-programacion-cu00211a&catid=36&highlight=WyJhcnJheSJd&Itemid=60)
 - **LabEx.** _[Arrays Dinámicos en C++: Creación y Gestión](https://labex.io/es/tutorials/cpp-how-to-create-dynamic-sized-arrays-in-c-434186)_.
-- **FAUN.dev.** [_How Python Lists Work Internally: A Deep Dive Into Dynamic Arrays_]().
+- **FAUN.dev.** [_How Python Lists Work Internally: A Deep Dive Into Dynamic Arrays_](https://faun.pub/how-python-lists-work-internally-a-deep-dive-into-dynamic-arrays-291d56a38ccb).
 - **Java Documentation**, [ArrayList y comportamiento de resize](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html).

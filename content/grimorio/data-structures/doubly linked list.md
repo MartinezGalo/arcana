@@ -1,9 +1,12 @@
 ---
-title: 'Lista doblemente enlazada'
-tags: ['data-structures']
-alias: ['lista doble', 'doubly linked list', 'DLL']
+title: Doubly Linked List
+tags:
+  - data-structures
+alias:
+  - lista doble
+  - doubly linked list
+  - DLL
 ---
-
 ## 1. Qué es y cómo funciona
 
 ### Intuición
@@ -32,7 +35,7 @@ Internamente, la estructura mantiene una secuencia de nodos enlazados en ambas d
 
 En la representación, el primer nodo apunta hacia `null` por su lado anterior. Cada nodo apunta al siguiente y al anterior, hasta llegar al último nodo, cuyo puntero siguiente apunta a `null`.
 
-![Representación de una lista doblemente enlazada](/attachments/grimorio/data-structures/lista-doblemente-enlazada.svg)
+![Representación de una lista doblemente enlazada](lista%20doblemente%20enlazada.svg)
 
 Diagrama simplificado:
 
