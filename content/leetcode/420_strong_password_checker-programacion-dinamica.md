@@ -4,7 +4,7 @@ tags: ['b/leetcode']
 ---
 
 ## Técnicas utilizadas
-**Programación Dinámica (Top-Down con Memorización):** Modela el problema mediante subproblemas recursivos. Utiliza un diccionario de memoria (Map) para almacenar las soluciones de estados combinados ya calculados, transformando un árbol de decisión exponencial en uno polinomial.
+**Programación Dinámica (Top-Down con Memorización):** Modela el problema mediante subproblemas recursivos. Utiliza un diccionario de memoria ([Map](../grimorio/data-structures/map.md)) para almacenar las soluciones de estados combinados ya calculados, transformando un árbol de decisión exponencial en uno polinomial.
 
 
 

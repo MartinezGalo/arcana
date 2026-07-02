@@ -106,52 +106,40 @@ FIN FUNCION
 ## Traza de ejemplo
 
 Usaremos de ejemplo el caso 2.<br>
-Contraseña analizada: `"aaaaaabcccc"`<br>
-Longitud: 11
 
-Primero el programa recorre los caracteres para chequear los tipos:
-* Contiene minúsculas ('a', 'b', 'c') → `tieneMinus` = 1
-* Contiene mayúsculas → `tieneMayus` = 0
-* Contiene dígitos → `tieneDigito` = 0
+**Contraseña analizada:** `"aaaaaabcccc"`
 
-Cálculo de tipos faltantes:<br>
-`tiposFaltantes` = 3 - (1 + 0 + 0) = $2$
+**Longitud:** 11
 
-Como `tam` es 11, NO entra al Caso 1 (tam < 6).
+Primero el programa recorre los caracteres  para chequear los tipos:
+- Contiene minúsculas ('a', 'b', 'c') -> tieneMinus = 1
+- Contiene mayúsculas -> tieneMayus = 0
+- Contiene dígitos -> tieneDigito = 0
 
-Análisis de las rachas o caracteres repetidos:
+**Cálculo de tipos faltantes:**
+tiposFaltantes = 3 - (1 + 0 + 0) = 2
 
-|i|Caracter|¿Igual al siguiente?|Longitud de racha|Accion|
-|-|--------|--------------------|-----------------|------|
-|0|‘a’|SI (i=1 es ‘a’)|2|Avanzo|
-|1|‘a’|SI (i=2 es ‘a’)|3|Avanzo|
-|2|‘a’|SI (i=3 es ‘a’)|4|Avanzo|
-|3|‘a’|SI (i=4 es ‘a’)|5|Avanzo|
-|4|‘a’|SI (i=5 es ‘a’)|6|Avanzo|
-|5|‘a’|NO (i=6 es ‘b’)|6|Fin grupo de 'a'. Mide >= 3:<br>- `pasosReemplazo` += 6 / 3 (Suma 2)<br>- 6 % 3 == 0 -> `necesitaUnBorrado` = 1|
-|6|‘b’|NO (i=7 es ‘c’)|1|Fin grupo de 'b'. Mide < 3:<br>- no hace nada|
-|7|‘c’|SI (i=8 es ‘c’)|2|Avanzo|
-|8|‘c’|SI (i=9 es ‘c’)|3|Avanzo|
-|9|‘c’|SI (i=10 es ‘c’)|4|
-|10|‘c’|NO (i=11 es fin)|4|Fin grupo de 'c'. Mide >= 3:<br>- `pasosReemplazo` += 4 / 3 (Suma 1)<br>- 4 % 3 == 1 -> `necesitaDosBorrados` = 1|
+Como tamaño es 11, NO entra al Caso 1 (tamaño < 6).
 
-Nos queda:<br>
-* `pasosReemplazo` = 3
-* `tiposFaltantes` = 2
-* `necesitaUnBorrado` = 1
-* `necesitaDosBorrados` = 1
+**Análisis de las rachas o caracteres repetidos:**
 
-Como el tamaño de la cadena es 11, aplicamos la lógica del caso 2:
-```python
-if (tamano <= 20):
-    return max(pasosReemplazo, tiposFaltantes)
-```
-Cálculo:<br>
-$max(3, 2)$ -> El valor mayor es 3.
+| i | Carácter | ¿Igual al sig.? | Long. racha | Acción |
+| :--- | :--- | :--- | :--- | :--- |
+| 0 | 'a' | SI | 2 | Avanzo |
+| 1 | 'a' | SI | 3 | Avanzo |
+| 2 | 'a' | SI | 4 | Avanzo |
+| 3 | 'a' | SI | 5 | Avanzo |
+| 4 | 'a' | SI | 6 | Avanzo |
+| 5 | 'a' | NO | 6 | Fin grupo: `pasosReemplazo` += 2, `necesitaUnBorrado` = 1 |
+| 6 | 'b' | NO | 1 | Fin grupo: sin acción |
+| 7 | 'c' | SI | 2 | Avanzo |
+| 8 | 'c' | SI | 3 | Avanzo |
+| 9 | 'c' | SI | 4 | Avanzo |
+| 10 | 'c' | NO | 4 | Fin grupo: `pasosReemplazo` += 1, `necesitaDosBorrados` = 1 |
 
-Resultado: 3
-
-
+* **Cálculos finales:** `pasosReemplazo` = 3, `tiposFaltantes` = 2.
+* **Aplicación Caso 2:** Como el tamaño (11) es $\leq 20$, calculamos $max(pasosReemplazo, tiposFaltantes) \rightarrow max(3, 2) = 3$.
+* **Resultado:** 3 operaciones.
 
 ## Complejidad
 
@@ -168,7 +156,6 @@ En cualquier combinación intermedia, la suma de las vueltas que da el bucle ext
 Debido a que el algoritmo no utiliza ninguna estructura de datos para almacenamiento, sino únicamente variables primitivas para asignaciones y como contadores, la complejidad espacial es constante: $\mathcal{O}(1)$.
 
 
-
 ## Cuándo usar esta técnica
 
 ### Favorable cuando
@@ -179,7 +166,8 @@ Debido a que el algoritmo no utiliza ninguna estructura de datos para almacenami
 * La estrategia Greedy funciona exclusivamente porque las operaciones básicas (insertar, borrar, reemplazar) tienen todas el mismo costo unitario ($1$). Si cada acción tuviera una ponderación de costo diferente o condicionada, las reglas fijas de prioridad matemática fallarían y se requeriría obligatoriamente Programación Dinámica.
 
 ### Comparación con la solución de Programación Dinámica
-La versión Greedy es mucho más eficiente en tiempo y memoria, y su código es más corto. Sin embargo, la versión de [programación dinámica](420_strong_password_checker-programacion-dinamica.md) es más flexible ante cambios en las reglas o costos del problema.
+
+La versión Greedy es mucho más eficiente en términos de complejidad temporal y espacial, presentando una implementación más concisa y legible. Sin embargo, la versión de [programación dinámica](420_strong_password_checker-programacion-dinamica.md) es más flexible ante cambios en las reglas o costos del problema.
 
 ## Referencias
 N/A
