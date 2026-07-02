@@ -88,7 +88,7 @@ def obtener_longitud_rachas(password: str, n: int) -> list:
     return rachas
 
 
-    # La funcion busca optimizar la cantidad de reemplazos necesarios considerando los borrados disponibles
+# La funcion busca optimizar la cantidad de reemplazos necesarios considerando los borrados disponibles
 def optimizar_rachas(idx: int, borrados_disponibles: int, rachas: list, memo: dict) -> int:
     # Caso base: si pasamos por todas las rachas, no se necesitan más reemplazos
     if idx == len(rachas):
@@ -103,7 +103,7 @@ def optimizar_rachas(idx: int, borrados_disponibles: int, rachas: list, memo: di
     # Inicializamos el mínimo de reemplazos necesarios como infinito
     minimo_reemplazos = float('inf')
     
-    # Los ultimos 2 caracteres de una racha no hacen falta borrarlos para cortarla,por lo que
+    # Los últimos 2 caracteres de una racha no hacen falta borrarlos para cortarla, por lo que
     # el máximo de borrados útiles es la longitud de la racha menos 2, si no es mayor que los borrados disponibles.
     max_borrados_utiles = min(borrados_disponibles, racha_actual - 2)
     
@@ -112,7 +112,7 @@ def optimizar_rachas(idx: int, borrados_disponibles: int, rachas: list, memo: di
 
         nueva_longitud = racha_actual - b
 
-        # Remplazos necesarios para cortar la racha despues de borrar b caracteres. 
+        # Reemplazos necesarios para cortar la racha despues de borrar b caracteres. 
         # Si la nueva longitud es menor que 3, no se necesitan reemplazos.
         reemplazos_necesarios = 0 if nueva_longitud < 3 else nueva_longitud // 3
 
@@ -146,15 +146,15 @@ Llamada inicial: `optimizar_rachas(idx=0, borrados_disponibles=8, rachas, memo)`
 |-----------------------------------|--------------------|--------------------------|
 | 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`max_borrados_utiles` = $\min(8, 9-2) = 7$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 3$.<br>Llama a (1-8). | Calculando |
 | 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`max_borrados_utiles` = $\min(8, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 2$.<br>Llama a (2-8). | Calculando |
-| 0-8 → 1-8 → 2-8 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(8, 3-2) = 1$.<br> $b=0\rightarrow 1$ remplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-8"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 → 2-8 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(8, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-8"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
 | 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $2 \text{ (local)} + 0 \text{ (futuro)} = 2$.<br>Avanza a $b=1$ ("ccc,cc").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-7). | Calculando |
-| 0-8 → 1-8 → 2-7 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(7, 3-2) = 1$.<br> $b=0\rightarrow 1$ remplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-7"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 → 2-7 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(7, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-7"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
 | 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $1 \text{ (local)} + 0 \text{ (futuro)} = 1$.<br>Avanza a $b=2$ ("ccc,c").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-6). | Calculando |
-| 0-8 → 1-8 → 2-6 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(6, 3-2) = 1$.<br> $b=0\rightarrow 1$ remplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-6"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 → 2-6 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(6, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-6"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
 | 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=3$ ("ccc,").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-5). | Calculando |
-| 0-8 → 1-8 → 2-5 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(5, 3-2) = 1$.<br> $b=0\rightarrow 1$ remplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-5"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 → 2-5 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(5, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-5"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
 | 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=4$ ("cc").<br>`reemplazos_necesarios` $= 0$.<br>Llama a (2-4). | Calculando |
-| 0-8 → 1-8 → 2-4 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(4, 3-2) = 1$.<br> $b=0\rightarrow 1$ remplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-4"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 → 2-4 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(4, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-4"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
 | 0-8 → 1-8| Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $0 \text{ (local)} + 0 \text{ (futuro)} = 0$.<br>Guarda memo["1-8"]<br>Retorna `minimo_reemplazos` = 0. | Calculando |
 | 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`minimo_reemplazos` local = $3 \text{ (local)} + 0 \text{ (futuro)} = 3$.<br>Avanza a $b=1$ ("aaa,aaa,aa").<br>`reemplazos_necesarios` $= 2$.<br>Llama a (1-7). | Calculando |
 | 0-8 → 1-7 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`max_borrados_utiles` = $\min(7, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 2$.<br>Llama a (2-7). | Calculando |
@@ -166,13 +166,16 @@ Llamada inicial: `optimizar_rachas(idx=0, borrados_disponibles=8, rachas, memo)`
 
 Tras evaluar todas las ramificaciones posibles de los bucles, el algoritmo determina que la distribución óptima para consumir los $8$ `borrados_obligatorios` consiste en aplicar 7 borrados en la racha 0 (dejándola en tamaño $2 \rightarrow 0$ reemplazos), 0 borrados en la racha 1 (dejándola en tamaño $6 \rightarrow 2$ reemplazos) y 1 borrado en la racha 2 (dejándola en tamaño $2 \rightarrow 0$ reemplazos). Logrando así un total de $2$ `reemplazos_restantes` tras optimizar los borrados.
 
-Resultado final mediante la Ecuación Maestra: 
+Resultado final mediante la Ecuación Maestra:
+
 $$
- modificaciones\ minimas=borrados\_obligatorios + \max(reemplazos\_restantes, tipos\_faltantes, inserciones\_obligatorias)
-$$ 
+\text{modificaciones mínimas} = \text{borrados obligatorios} + \max(\text{reemplazos restantes}, \text{tipos faltantes}, \text{inserciones obligatorias})
 $$
- 8 + \max(2, 1, 0) = 8 + 2 = \mathbf{10}
-$$ 
+
+$$
+8 + \max(2, 1, 0) = 8 + 2 = \mathbf{10}
+$$
+
 
 
 Como los $2$ reemplazos que quedaron pendientes tras optimizar los borrados son numéricamente mayores que el único tipo de carácter que nos faltaba ($2 > 1$), esos mismos $2$ reemplazos se eligen estratégicamente. Al momento de modificar los caracteres para romper la racha restante de las 'c', uno de esos cambios se realiza introduciendo la letra mayúscula requerida. De esta manera, se soluciona el problema de contenido y el de estructura en simultáneo, sin necesidad de agregar operaciones extras al total.
