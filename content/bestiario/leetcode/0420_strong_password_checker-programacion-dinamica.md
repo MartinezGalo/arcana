@@ -195,7 +195,7 @@ $\mathcal{O}(R \times B) + \mathcal{O}(R)$. Requiere memoria para almacenar el m
 - Esta solución realiza trabajo redundante al explorar y evaluar ramificaciones de borrado ineficientes que el enfoque codicioso descarta de antemano mediante reglas de prioridad fijas.
 
 ### Comparación con la solución Greedy
-El enfoque [Greedy](420_strong_password_checker-greedy.md) resuelve el escenario en $\mathcal{O}(n)$ de tiempo y $\mathcal{O}(1)$ de espacio utilizando una prioridad matemática rígida basada en el módulo de la longitud de las rachas ($L \pmod 3$).
+El enfoque [Greedy](0420_strong_password_checker-greedy.md) resuelve el escenario en $\mathcal{O}(n)$ de tiempo y $\mathcal{O}(1)$ de espacio utilizando una prioridad matemática rígida basada en el módulo de la longitud de las rachas ($L \pmod 3$).
 
 La solución por Programación Dinámica es ligeramente más costosa en memoria, pero tiene la enorme ventaja de ser mucho más intuitiva de diseñar y deducir, ya que no requiere descubrir "el truco matemático oculto" para coordinar las prioridades de los borrados; la DP encuentra la combinación óptima de forma natural explorando inteligentemente el espacio de soluciones.
 

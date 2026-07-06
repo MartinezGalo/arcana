@@ -2,7 +2,6 @@
 title: 'LeetCode #0420 - Strong Password Checker'
 tags: ['b/leetcode']
 ---
-
 ## Nombre y enunciado
 
 El problema nos pide calcular el número **mínimo** de operaciones (inserciones, eliminaciones o reemplazos) necesarias para transformar una cadena de texto en una "contraseña fuerte". Para que una contraseña se considere fuerte, debe cumplir tres reglas estrictas:
@@ -68,6 +67,7 @@ Para entender la lógica, separamos en tres casos según la longitud ($n$):
 ---
 
 ## Por dónde empezar
+
 1. Una primera aproximación razonable es identificar las tres lógicas independientes según el tamaño de la contraseña ($n < 6$, $6 \le n \le 20$ y $n > 20$). Diseñar rutinas simples para calcular los caracteres faltantes o los reemplazos necesarios en base a las rachas de letras repetidas permite entender el comportamiento básico del problema.
 2. El siguiente paso es estructurar el caso de contraseñas largas utilizando **Greedy**. Esto implica programar un orden de prioridad estricto para las eliminaciones basado en el resto de la división por 3 del tamaño de cada racha ($L \pmod 3$), asegurando que cada borrado reduzca al máximo los reemplazos posteriores.
 3. Finalmente, una vez que la cadena se reduce al tamaño permitido de 20 caracteres mediante estas eliminaciones óptimas, el problema se unifica con el escenario mediano, sumando los reemplazos remanentes para obtener el mínimo absoluto de operaciones.
@@ -75,5 +75,6 @@ Para entender la lógica, separamos en tres casos según la longitud ($n$):
 ---
 
 ## Soluciones disponibles
-- [Solución Greedy](420_strong_password_checker-greedy.md)
-- [Solución con Programación Dinámica](420_strong_password_checker-programacion-dinamica.md)
+
+- [[0420_strong_password_checker-greedy]]
+- [[0420_strong_password_checker-programacion-dinamica]]

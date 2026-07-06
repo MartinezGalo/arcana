@@ -167,7 +167,7 @@ Debido a que el algoritmo no utiliza ninguna estructura de datos para almacenami
 
 ### Comparación con la solución de Programación Dinámica
 
-La versión Greedy es mucho más eficiente en términos de complejidad temporal y espacial, presentando una implementación más concisa y legible. Sin embargo, la versión de [programación dinámica](420_strong_password_checker-programacion-dinamica.md) es más flexible ante cambios en las reglas o costos del problema.
+La versión Greedy es mucho más eficiente en términos de complejidad temporal y espacial, presentando una implementación más concisa y legible. Sin embargo, la versión de [programación dinámica](0420_strong_password_checker-programacion-dinamica.md) es más flexible ante cambios en las reglas o costos del problema.
 
 ## Referencias
 N/A
