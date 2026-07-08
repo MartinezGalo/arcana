@@ -15,9 +15,9 @@ El problema nos pide calcular el número **mínimo** de operaciones (inserciones
 
 ## Intuición
 Lo que hace a este problema tan interesante es que no se resuelve con un algoritmo estándar de libro, sino que la dificultad radica en que las decisiones dependen de la longitud de la cadena. 
-* Si la contraseña es **corta** ($n < 6$), conviene insertar.
-* Si es del **tamaño requerido** ($6 \le n \le 20$), conviene reemplazar.
-* Si es **larga** ($n > 20$), hay que eliminar caracteres cuidando de no quedarte sin mayúsculas, minúsculas o dígitos.
+* Si la contraseña es **corta** ($n < 6$), se realizan inserciones para alcanzar la longitud mínima.
+* Si es del **tamaño requerido** ($6 \le n \le 20$), la longitud es ideal y el problema se resuelve puramente mediante reemplazos estratégicos para romper las rachas.
+* Si es **larga** ($n > 20$), se deben realizar eliminaciones para reducir la longitud, y estas eliminaciones deben ser cuidadosamente priorizadas sobre las rachas de caracteres para minimizar los reemplazos necesarios después.
 
 ### Definición formal
 * **Entrada:** Una única variable `password` de tipo `String` que consiste en letras, dígitos, puntos (`.`) y signos de exclamación (`!`).
@@ -48,7 +48,7 @@ Para entender la lógica, separamos en tres casos según la longitud ($n$):
     * `"aaaaaa"` de longitud 6 (6/3 = 2 reemplazos).
     * `"cccc"` de longitud 4 (4/3 = 1 reemplazo).
 
-> **Resolución:** Como la longitud es ideal, no queremos insertar ni borrar, solo se reemplazan caracteres. La racha `"aaaaaa"` requiere 2 reemplazos ($6 // 3 = 2$) y la racha `"cccc"` requiere 1 reemplazo ($4 // 3 = 1$), sumando un total de 3 reemplazos. Podemos aprovechar estos mismos reemplazos para introducir la mayúscula y el dígito que nos faltan, por ejemplo `"aaDaa1bcdc"`. 
+> **Resolución:** Como la longitud es ideal, no queremos insertar ni borrar, solo se reemplazan caracteres. La racha `"aaaaaa"` requiere 2 reemplazos ($6 // 3 = 2$) y la racha `"cccc"` requiere 1 reemplazo ($4 // 3 = 1$), sumando un total de 3 reemplazos. Podemos aprovechar estos mismos reemplazos para introducir la mayúscula y el dígito que nos faltan, por ejemplo `"aaDaa1bccdc"`. 
 > 
 > **Total de operaciones = 3.**
 

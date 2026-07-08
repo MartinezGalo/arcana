@@ -11,8 +11,7 @@ La solución clasifica la contraseña en tres casos excluyentes según su tamañ
 
 1. **Contraseñas cortas ($n < 6$):** Se soluciona usando solo inserciones. El resultado es el valor máximo entre los caracteres que faltan para llegar a 6 y los tipos de caracteres obligatorios (mayúscula, minúscula o número) ausentes.
 2. **Contraseñas medianas ($6 \le n \le 20$):** Se soluciona usando solo reemplazos. Se calculan las sustituciones necesarias para romper las rachas ($\lfloor L / 3 \rfloor$). El total de pasos es el máximo entre la suma de estos reemplazos y los tipos faltantes.
-3. **Contraseñas largas ($n > 20$):** Se calculan los borrados obligatorios para bajar el tamaño a 20. Para ahorrar pasos, se eliminan caracteres dando prioridad a las rachas de longitud múltiplo de 3, luego las de resto 1 y al final resto 2. Al llegar a 20, se suman los reemplazos que queden pendientes.
-
+3. **Contraseñas largas ($n > 20$):** Se calculan los borrados obligatorios para bajar el tamaño de la cadena a 20. Para ahorrar pasos futuros, se eliminan caracteres dando prioridad a las rachas según su residuo matemático (primero las de longitud múltiplo de 3, luego resto 1 y al final resto 2). Una vez completados los borrados y optimizadas las rachas, el resultado final es la suma de esos **borrados obligatorios** más el **máximo entre los reemplazos necesarios y los tipos faltantes**.
 
 ## Código
 
@@ -20,20 +19,8 @@ La solución clasifica la contraseña en tres casos excluyentes según su tamañ
 FUNCION strongPasswordCheckerGreedy(password)
     n ← tamaño(password)
 
-    // Calcular tipos de caracteres faltantes
-    tieneMinus ← 0, tieneMayus ← 0, tieneDigito ← 0
-
-    PARA i desde 0 HASTA n-1 HACER
-        c ← password(i)
-        SI c es minúscula ENTONCES
-            tieneMinus ← 1
-        SI c es mayúscula ENTONCES
-            tieneMayus ← 1
-        SI c es un dígito ENTONCES
-            tieneDigito ← 1;
-    FIN PARA
-
-    tiposFaltantes ← 3 - (tieneMinus + tieneMayus + tieneDigito)
+    // Contar tipos de caracteres faltantes (0, 1, 2 o 3)
+    tiposFaltantes ← obtenerTiposFaltantes(password)
 
     // Caso 1: Contraseña corta
     SI n < 6 ENTONCES
@@ -73,34 +60,24 @@ FUNCION strongPasswordCheckerGreedy(password)
 
     // Caso 3: Contraseña larga (n > 20)
     tamSobrante ← n - 20
-    totalBorrados ← tamSobrante // Guardamos el costo fijo de las eliminaciones requeridas
+    totalBorrados ← tamSobrante // Guardo el costo fijo de los borrados requeridos
 
-    // Prioridad 1: Grupos 3k (1 borrado = 1 reemplazo menos)
-    SI tamSobrante > 0 Y necesitaUnBorrado > 0 ENTONCES
-        numBorrados ← min(tamSobrante, necesitaUnBorrado)
-        tamSobrante ← tamSobrante - numBorrados
-        pasosReemplazo ← pasosReemplazo - numBorrados
-    FIN SI
-
-    // Prioridad 2: Grupos 3k+1 (2 borrados = 1 reemplazo menos)
-    SI tamSobrante > 0 Y necesitaDosBorrados > 0 ENTONCES
-        numBorrados ← min(tamSobrante, necesitaDosBorrados * 2)
-        tamSobrante ← tamSobrante - numBorrados
-        pasosReemplazo ← pasosReemplazo - ParteEntera(numBorrados / 2)
-    FIN SI
-
-    // Prioridad 3: Cualquier remanente (3 borrados = 1 reemplazo menos)
-    SI tamSobrante > 0 Y pasosReemplazo > 0 ENTONCES
-        numBorrados ← min(tamSobrante, pasosReemplazo * 3)
-        tamSobrante ← tamSobrante - numBorrados
-        pasosReemplazo ← pasosReemplazo - ParteEntera(numBorrados / 3)
-    FIN SI
-
-    // Resultado final: eliminaciones obligatorias + lo que sea mayor entre reemplazos e insuficiencia de tipos
+    // se aplican borrados a las rachas según su residuo de división por 3, en orden de prioridad
+    tamSobrante, pasosReemplazo ← aplicarBorrados(tamSobrante, necesitaUnBorrado, 1, pasosReemplazo)
+    tamSobrante, pasosReemplazo ← aplicarBorrados(tamSobrante, necesitaDosBorrados, 2, pasosReemplazo)
+    tamSobrante, pasosReemplazo ← aplicarBorrados(tamSobrante, pasosReemplazo, 3, pasosReemplazo)
 
     RETORNAR totalBorrados + max(pasosReemplazo, tiposFaltantes)
 FIN FUNCION
 
+FUNCION aplicarBorrados(tamSobrante, disponibles, costo, pasosReemplazo)
+    SI tamSobrante > 0 Y disponibles > 0 ENTONCES
+        numBorrados ← min(tamSobrante, disponibles * costo)
+        tamSobrante ← tamSobrante - numBorrados
+        pasosReemplazo ← pasosReemplazo - ParteEntera(numBorrados / costo)
+    FIN SI
+    RETORNAR tamSobrante, pasosReemplazo
+FIN FUNCION
 ```
 
 ## Traza de ejemplo
@@ -112,12 +89,11 @@ Usaremos de ejemplo el caso 2.<br>
 **Longitud:** 11
 
 Primero el programa recorre los caracteres  para chequear los tipos:
-- Contiene minúsculas ('a', 'b', 'c') -> tieneMinus = 1
-- Contiene mayúsculas -> tieneMayus = 0
-- Contiene dígitos -> tieneDigito = 0
+- **minúscula:** SI (hay 'a')
+- **mayúscula:** NO (no hay letras mayúsculas)
+- **dígito:** NO (no hay números)
 
-**Cálculo de tipos faltantes:**
-tiposFaltantes = 3 - (1 + 0 + 0) = 2
+obtenerTiposFaltantes retorna 2 (faltan mayúscula y dígito).
 
 Como tamaño es 11, NO entra al Caso 1 (tamaño < 6).
 
@@ -144,13 +120,14 @@ Como tamaño es 11, NO entra al Caso 1 (tamaño < 6).
 ## Complejidad
 
 ### Temporal:
-En el algoritmo destacan dos bucles.<br>
-El primero para el conteo de tipos de caracteres por toda la cadena, lo que nos da una complejidad $T(N)$ para el peor caso, siendo N la cantidad de caracteres en “password”.<br>
-El segundo para el conteo de bloques repetidos, usa bucles anidados: el bucle externo ($A$) inicia en i = 0, y el bucle interno ($B$) inicia en i + 1.
-* En el caso de que “password” tenga todos sus caracteres diferentes, cuando el bucle $B$ vea si el caracter en la posición i es igual al de i+1, nunca avanzará. Entonces tenemos $N$ pasos para el bucle $A$ y 0 para el $B$. $\mathcal{O}(N+0)$
-* Para el caso en que “password” tenga todos sus caracteres iguales, el bucle $B$ iniciará en i+1 y avanzará hasta i = $N-1$, cuando el bucle $A$ avance en 1 se cortará. Esto nos da 1 paso para el bucle $A$ y N-1 pasos para el $B$. $\mathcal{O}(1+N-1)$
+En el algoritmo destacan dos iteraciones.<br>
+1. Se delega a la función auxiliar `obtenerTiposFaltantes(password)`. Por detrás, esta función requiere realizar una pasada lineal sobre el string de longitud $N$ para verificar la presencia de minúsculas, mayúsculas y dígitos. Esto representa un costo temporal de **$\mathcal{O}(N)$**.
+2. Se procesan las rachas utilizando un mecanismo de punteros con dos bucles anidados (un bucle externo $A$ y un bucle interno $B$). Aunque están anidados, el puntero `i` avanza de forma estrictamente incremental y lineal de $0$ a $N-1$:
+   * **Si todos los caracteres son diferentes:** El bucle externo $A$ realiza $N$ iteraciones, mientras que el bucle interno $B$ nunca avanza (0 pasos). Esto se simplifica asintóticamente a $\mathcal{O}(N)$.
+   * **Si todos los caracteres son iguales:** El bucle interno $B$ realiza $N-1$ pasos en la primera iteración consumiendo toda la cadena, y el bucle externo $A$ termina inmediatamente en su siguiente control. Esto se simplifica asintóticamente a $\mathcal{O}(N)$.
+   
+En cualquier combinación intermedia, la suma de las iteraciones de ambos bucles esta acotada por un factor lineal de $N$. Por eso la complejidad temporal se simplifica directamente a **$\mathcal{O}(N)$**.
 
-En cualquier combinación intermedia, la suma de las vueltas que da el bucle externo más las que da el bucle interno siempre va a ser igual a N. Por eso la complejidad temporal será exactamente igual a $\mathcal{O}(N)$.
 
 ### Espacial:
 Debido a que el algoritmo no utiliza ninguna estructura de datos para almacenamiento, sino únicamente variables primitivas para asignaciones y como contadores, la complejidad espacial es constante: $\mathcal{O}(1)$.
@@ -170,4 +147,4 @@ Debido a que el algoritmo no utiliza ninguna estructura de datos para almacenami
 La versión Greedy es mucho más eficiente en términos de complejidad temporal y espacial, presentando una implementación más concisa y legible. Sin embargo, la versión de [programación dinámica](0420_strong_password_checker-programacion-dinamica.md) es más flexible ante cambios en las reglas o costos del problema.
 
 ## Referencias
-N/A
+* **GeeksforGeeks.** [Greedy Algorithms](https://www.geeksforgeeks.org/greedy-algorithms/). Artículo detallado sobre las propiedades matemáticas y la elección óptima en algoritmos greedy.

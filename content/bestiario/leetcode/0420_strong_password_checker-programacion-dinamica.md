@@ -4,7 +4,8 @@ tags: ['b/leetcode']
 ---
 
 ## Técnicas utilizadas
-**Programación Dinámica (Top-Down con Memorización):** Modela el problema mediante subproblemas recursivos. Utiliza un diccionario de memoria ([Map](../../grimorio/data-structures/map.md)) para almacenar las soluciones de estados combinados ya calculados, transformando un árbol de decisión exponencial en uno polinomial.
+**Programación Dinámica (Top-Down con Memorización):** El problema se presta para ser resuelto mediante programación dinámica, ya que la solución global óptima (minimizar el total de modificaciones) depende directamente de tomar decisiones óptimas locales sobre componentes aislados (las rachas individuales). Para una cantidad dada de borrados disponibles, el mínimo global de reemplazos remanentes se construye combinando la mejor decisión tomada para la racha actual (borrar $0, 1, \dots, b$ caracteres) con la solución óptima ya calculada para las rachas siguientes con los borrados restantes ($borrados - b$).<br>
+Ademas, existe un **subproblema superpuesto**: la misma racha puede ser evaluada múltiples veces con diferentes cantidades de borrados disponibles, lo que hace que la memorización sea una estrategia eficiente para evitar cálculos redundantes.
 
 
 
@@ -28,41 +29,41 @@ Se simplifica el análisis de la contraseña reduciéndola a un conjunto de comp
    * La Programación Dinámica se encarga de probar todas las distribuciones posibles de los `borrados obligatorios` sobre las distintas rachas para encontrar **la combinación que cause la mayor reducción de reemplazos pendientes**.
 
 **La Ecuación Maestra Unificada:**
-   * Las operaciones finales se componen de los `borrados_obligatorios` más el valor máximo entre: la **cantidad de reemplazos optimizada**, los **tipos de caracteres faltantes** y las **inserciones obligatorias**. Esto se debe a que una **inserción** o un **reemplazo** estratégicos pueden solucionar simultáneamente un problema de racha y aportar un tipo de carácter faltante (por ejemplo, insertar o reemplazar por una mayúscula en medio de `"aaa"` -> `"aaB"`).
+   * Las operaciones finales se componen de los `borradosObligatorios` más el valor máximo entre: la **cantidad de reemplazos optimizada**, los **tipos de caracteres faltantes** y las **inserciones obligatorias**. Esto se debe a que una **inserción** o un **reemplazo** estratégicos pueden solucionar simultáneamente un problema de racha y aportar un tipo de carácter faltante (por ejemplo, insertar o reemplazar por una mayúscula en medio de `"aaa"` -> `"aaB"`).
 
 $$
- modificaciones\ minimas = borrados\_obligatorios + \max(reemplazos, tipos\_faltantes, inserciones\_obligatorias)
+ modificaciones\ minimas = borradosObligatorios + \max(reemplazos, tiposFaltantes, insercionesObligatorias)
 $$
 
 
 ## Código
 
 ```python
-def strong_password_checker(password: str) -> int:
+def strongPasswordCheckerDP(password: str) -> int:
     n = len(password)
 
     # Obtiene la cantidad de tipos de caracteres faltantes (mayúscula, minúscula, dígito)
-    tipos_faltantes = caracteres_faltantes(password)
+    tiposFaltantes = obtenerTiposFaltantes(password)
     # Obtiene una lista con la longitud de las rachas de caracteres repetidos
-    rachas = obtener_longitud_rachas(password, n)
+    rachas = obtenerLongitudRachas(password, n)
 
     # Si la contraseña es demasiado larga, necesitamos borrar caracteres.
-    borrados_obligatorios = max(0, n - 20)
+    borradosObligatorios = max(0, n - 20)
 
     # Si la contraseña es demasiado corta, necesitamos insertar caracteres.
-    inserciones_obligatorias = max(0, 6 - n)
+    insercionesObligatorias = max(0, 6 - n)
     
-    # Mapa para memoización de resultados
+    # Map para memoización de resultados
     memo = {}
 
     # Optimiza la cantidad de reemplazos necesarios considerando los borrados disponibles
-    reemplazos_restantes = optimizar_rachas(0, borrados_obligatorios, rachas, memo)
+    reemplazosRestantes = optimizarRachas(0, borradosObligatorios, rachas, memo)
     
     # El resultado final es la suma de los borrados obligatorios, los reemplazos restantes 
     # y los caracteres faltantes o inserciones necesarias.
-    return borrados_obligatorios + max(reemplazos_restantes, tipos_faltantes, inserciones_obligatorias)
+    return borradosObligatorios + max(reemplazosRestantes, tiposFaltantes, insercionesObligatorias)
 
-def caracteres_faltantes(password: str) -> int:
+def obtenerTiposFaltantes(password: str) -> int:
     mayus, minus, digito = 0, 0, 0
     for c in password:
         if c.isupper():
@@ -74,57 +75,57 @@ def caracteres_faltantes(password: str) -> int:
     return 3 - (mayus + minus + digito)
 
 
-def obtener_longitud_rachas(password: str, n: int) -> list:
+def obtenerLongitudRachas(password: str, n: int) -> list:
     rachas = []
     i = 0
     while i < n:
         j = i
         while j < n and password[j] == password[i]:
             j += 1
-        longitud_racha = j - i
-        if longitud_racha >= 3:
-            rachas.append(longitud_racha)
+        longitudRacha = j - i
+        if longitudRacha >= 3:
+            rachas.append(longitudRacha)
         i = j
     return rachas
 
 
 # La funcion busca optimizar la cantidad de reemplazos necesarios considerando los borrados disponibles
-def optimizar_rachas(idx: int, borrados_disponibles: int, rachas: list, memo: dict) -> int:
+def optimizarRachas(idx: int, borradosDisponibles: int, rachas: list, memo: dict) -> int:
     # Caso base: si pasamos por todas las rachas, no se necesitan más reemplazos
     if idx == len(rachas):
         return 0
         
-    key = f"{idx}-{borrados_disponibles}"
+    key = f"{idx}-{borradosDisponibles}"
     # Si ya calculamos el resultado para esta clave, lo devolvemos desde la memoización
     if key in memo:
         return memo[key]
         
-    racha_actual = rachas[idx]
+    rachaActual = rachas[idx]
     # Inicializamos el mínimo de reemplazos necesarios como infinito
-    minimo_reemplazos = float('inf')
+    minimoReemplazos = float('inf')
     
     # Los últimos 2 caracteres de una racha no hacen falta borrarlos para cortarla, por lo que
     # el máximo de borrados útiles es la longitud de la racha menos 2, si no es mayor que los borrados disponibles.
-    max_borrados_utiles = min(borrados_disponibles, racha_actual - 2)
+    maxBorradosUtiles = min(borradosDisponibles, rachaActual - 2)
     
-    # Ramificamos: no borramos nada, borramos 1, borramos 2, ..., hasta max_borrados_utiles
-    for b in range(max_borrados_utiles + 1):
+    # Ramificamos: no borramos nada, borramos 1, borramos 2, ..., hasta maxBorradosUtiles
+    for b in range(maxBorradosUtiles + 1):
 
-        nueva_longitud = racha_actual - b
+        nuevaLongitud = rachaActual - b
 
         # Reemplazos necesarios para cortar la racha despues de borrar b caracteres. 
         # Si la nueva longitud es menor que 3, no se necesitan reemplazos.
-        reemplazos_necesarios = 0 if nueva_longitud < 3 else nueva_longitud // 3
+        reemplazosNecesarios = 0 if nuevaLongitud < 3 else nuevaLongitud // 3
 
         # Calculamos el costo futuro llamando recursivamente a la función para la siguiente racha
-        reemplazos_siguiente_racha = optimizar_rachas(idx + 1, borrados_disponibles - b, rachas, memo)
+        reemplazosSiguienteRacha = optimizarRachas(idx + 1, borradosDisponibles - b, rachas, memo)
 
         # Actualizamos el mínimo de reemplazos necesarios considerando la opción actual
-        minimo_reemplazos = min(minimo_reemplazos, reemplazos_necesarios + reemplazos_siguiente_racha)
+        minimoReemplazos = min(minimoReemplazos, reemplazosNecesarios + reemplazosSiguienteRacha)
         
     # Guardamos el resultado en la memoización para evitar cálculos repetidos
-    memo[key] = minimo_reemplazos
-    return minimo_reemplazos
+    memo[key] = minimoReemplazos
+    return minimoReemplazos
 
 
 ```
@@ -132,39 +133,39 @@ def optimizar_rachas(idx: int, borrados_disponibles: int, rachas: list, memo: di
 
 Instancia de prueba: `password = "aaaaaaaaabccccccddd123456789"` ($n = 28$)
 
-`faltan_tipos = 1` (Tiene minúsculas y dígitos; falta mayúscula).
+`tiposFaltantes = 1` (Tiene minúsculas y dígitos; falta mayúscula).
 
 `rachas = [9, 6, 3]` (Índices de racha 0, 1 y 2 respectivamente, correspondientes a 'a', 'c' y 'd').
 
-`borrados_obligatorios` = $= \max(0, 28 - 20) = \mathbf{8}$. 
+`borradosObligatorios` = $= \max(0, 28 - 20) = \mathbf{8}$. 
 
-`inserciones_obligatorias = 0`.
+`insercionesObligatorias = 0`.
 
-Llamada inicial: `optimizar_rachas(idx=0, borrados_disponibles=8, rachas, memo)`
+Llamada inicial: `optimizarRachas(idx=0, borradosDisponibles=8, rachas, memo)`
 
-| Estado (idx-borrados_disponibles) | Acción / Resultado | ¿Calculado o Memorizado? |
+| Estado (idx-borradosDisponibles) | Acción / Resultado | ¿Calculado o Memorizado? |
 |-----------------------------------|--------------------|--------------------------|
-| 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`max_borrados_utiles` = $\min(8, 9-2) = 7$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 3$.<br>Llama a (1-8). | Calculando |
-| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`max_borrados_utiles` = $\min(8, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 2$.<br>Llama a (2-8). | Calculando |
-| 0-8 → 1-8 → 2-8 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(8, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-8"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
-| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $2 \text{ (local)} + 0 \text{ (futuro)} = 2$.<br>Avanza a $b=1$ ("ccc,cc").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-7). | Calculando |
-| 0-8 → 1-8 → 2-7 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(7, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-7"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
-| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $1 \text{ (local)} + 0 \text{ (futuro)} = 1$.<br>Avanza a $b=2$ ("ccc,c").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-6). | Calculando |
-| 0-8 → 1-8 → 2-6 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(6, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-6"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
-| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=3$ ("ccc,").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-5). | Calculando |
-| 0-8 → 1-8 → 2-5 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(5, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-5"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
-| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=4$ ("cc").<br>`reemplazos_necesarios` $= 0$.<br>Llama a (2-4). | Calculando |
-| 0-8 → 1-8 → 2-4 | Última racha ("ddd", $L = 3$).<br>`max_borrados_utiles` = $\min(4, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-4"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
-| 0-8 → 1-8| Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimo_reemplazos` local = $0 \text{ (local)} + 0 \text{ (futuro)} = 0$.<br>Guarda memo["1-8"]<br>Retorna `minimo_reemplazos` = 0. | Calculando |
-| 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`minimo_reemplazos` local = $3 \text{ (local)} + 0 \text{ (futuro)} = 3$.<br>Avanza a $b=1$ ("aaa,aaa,aa").<br>`reemplazos_necesarios` $= 2$.<br>Llama a (1-7). | Calculando |
-| 0-8 → 1-7 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`max_borrados_utiles` = $\min(7, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazos_necesarios` $= 2$.<br>Llama a (2-7). | Calculando |
+| 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`maxBorradosUtiles` = $\min(8, 9-2) = 7$.<br>Prueba $b=0$ (no borra).<br>`reemplazosNecesarios` $= 3$.<br>Llama a (1-8). | Calculando |
+| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`maxBorradosUtiles` = $\min(8, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazosNecesarios` $= 2$.<br>Llama a (2-8). | Calculando |
+| 0-8 → 1-8 → 2-8 | Última racha ("ddd", $L = 3$).<br>`maxBorradosUtiles` = $\min(8, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-8"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimoReemplazos` local = $2 \text{ (local)} + 0 \text{ (futuro)} = 2$.<br>Avanza a $b=1$ ("ccc,cc").<br>`reemplazosNecesarios` $= 1$.<br>Llama a (2-7). | Calculando |
+| 0-8 → 1-8 → 2-7 | Última racha ("ddd", $L = 3$).<br>`maxBorradosUtiles` = $\min(7, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-7"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimoReemplazos` local = $1 \text{ (local)} + 0 \text{ (futuro)} = 1$.<br>Avanza a $b=2$ ("ccc,c").<br>`reemplazosNecesarios` $= 1$.<br>Llama a (2-6). | Calculando |
+| 0-8 → 1-8 → 2-6 | Última racha ("ddd", $L = 3$).<br>`maxBorradosUtiles` = $\min(6, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-6"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=3$ ("ccc,").<br>`reemplazosNecesarios` $= 1$.<br>Llama a (2-5). | Calculando |
+| 0-8 → 1-8 → 2-5 | Última racha ("ddd", $L = 3$).<br>`maxBorradosUtiles` = $\min(5, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-5"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=4$ ("cc").<br>`reemplazosNecesarios` $= 0$.<br>Llama a (2-4). | Calculando |
+| 0-8 → 1-8 → 2-4 | Última racha ("ddd", $L = 3$).<br>`maxBorradosUtiles` = $\min(4, 3-2) = 1$.<br> $b=0\rightarrow 1$ reemplazo.<br> $b=1\rightarrow 0$ reemplazos.<br>Guarda memo["2-4"] = 0.<br>Retorna 0. | Calculando y guarda en memo |
+| 0-8 → 1-8| Evalúa racha 1 ("cccccc", $L = 6$).<br>`minimoReemplazos` local = $0 \text{ (local)} + 0 \text{ (futuro)} = 0$.<br>Guarda memo["1-8"]<br>Retorna `minimoReemplazos` = 0. | Calculando |
+| 0-8 | Evalúa racha 0 ("aaaaaaaaa", $L = 9$).<br>`minimoReemplazos` local = $3 \text{ (local)} + 0 \text{ (futuro)} = 3$.<br>Avanza a $b=1$ ("aaa,aaa,aa").<br>`reemplazosNecesarios` $= 2$.<br>Llama a (1-7). | Calculando |
+| 0-8 → 1-7 | Evalúa racha 1 ("cccccc", $L = 6$).<br>`maxBorradosUtiles` = $\min(7, 6-2) = 4$.<br>Prueba $b=0$ (no borra).<br>`reemplazosNecesarios` $= 2$.<br>Llama a (2-7). | Calculando |
 | 0-8 → 1-7 → 2-7 | Evita volver a procesar el árbol.<br>Devuelve memo["2-7"] que es 0 en $\mathcal{O}(1)$. | ¡MEMORIZADO! |
-| 0-8 → 1-7 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=1$ ("ccc,cc").<br>`reemplazos_necesarios` $= 1$.<br>Llama a (2-6). | Calculando |
+| 0-8 → 1-7 | Evalúa racha 1 ("cccccc", $L = 6$).<br>Avanza a $b=1$ ("ccc,cc").<br>`reemplazosNecesarios` $= 1$.<br>Llama a (2-6). | Calculando |
 | 0-8 → 1-7 → 2-6 | Evita volver a procesar el árbol.<br>Devuelve memo["2-6"] que es 0 en $\mathcal{O}(1)$. | ¡MEMORIZADO! |
 |...|...|...|
 
 
-Tras evaluar todas las ramificaciones posibles de los bucles, el algoritmo determina que la distribución óptima para consumir los $8$ `borrados_obligatorios` consiste en aplicar 7 borrados en la racha 0 (dejándola en tamaño $2 \rightarrow 0$ reemplazos), 0 borrados en la racha 1 (dejándola en tamaño $6 \rightarrow 2$ reemplazos) y 1 borrado en la racha 2 (dejándola en tamaño $2 \rightarrow 0$ reemplazos). Logrando así un total de $2$ `reemplazos_restantes` tras optimizar los borrados.
+Tras evaluar todas las ramificaciones posibles de los bucles, el algoritmo determina que la distribución óptima para consumir los $8$ `borradosObligatorios` consiste en aplicar 7 borrados en la racha 0 (dejándola en tamaño $2 \rightarrow 0$ reemplazos), 0 borrados en la racha 1 (dejándola en tamaño $6 \rightarrow 2$ reemplazos) y 1 borrado en la racha 2 (dejándola en tamaño $2 \rightarrow 0$ reemplazos). Logrando así un total de $2$ `reemplazosRestantes` tras optimizar los borrados.
 
 Resultado final mediante la Ecuación Maestra:
 
@@ -191,8 +192,8 @@ $\mathcal{O}(R \times B) + \mathcal{O}(R)$. Requiere memoria para almacenar el m
 - El espacio de estados de las variables es acotado (idx y borrados tienen límites máximos pequeños debido a las restricciones físicas del problema), lo que evita que la estructura de memorización crezca descontroladamente.
 - Se busca un código altamente mantenible y adaptativo, donde cambiar las reglas básicas (como el tamaño máximo de la contraseña o la longitud de las rachas toleradas) no requiera rediseñar la lógica matemática desde cero.
 ### Limitaciones
-- No escala bien si las restricciones del problema cambian a longitudes extremadamente grandes (ej. $n \ge 10^5$), ya que la creación dinámica de cadenas de texto para las llaves del Map y el almacenamiento masivo de estados provocarían un consumo de memoria excesivo.
-- Esta solución realiza trabajo redundante al explorar y evaluar ramificaciones de borrado ineficientes que el enfoque codicioso descarta de antemano mediante reglas de prioridad fijas.
+- No escala bien si las restricciones del problema cambian a longitudes extremadamente grandes (ej. $n \ge 10^5$), ya que la creación dinámica de cadenas de texto para las keys del Map y el almacenamiento masivo de estados provocarían un consumo de memoria excesivo.
+- Esta solución realiza trabajo redundante al explorar y evaluar ramificaciones de borrado ineficientes que el enfoque Greedy descarta de antemano mediante reglas de prioridad fijas.
 
 ### Comparación con la solución Greedy
 El enfoque [Greedy](0420_strong_password_checker-greedy.md) resuelve el escenario en $\mathcal{O}(n)$ de tiempo y $\mathcal{O}(1)$ de espacio utilizando una prioridad matemática rígida basada en el módulo de la longitud de las rachas ($L \pmod 3$).
@@ -200,4 +201,5 @@ El enfoque [Greedy](0420_strong_password_checker-greedy.md) resuelve el escenari
 La solución por Programación Dinámica es ligeramente más costosa en memoria, pero tiene la enorme ventaja de ser mucho más intuitiva de diseñar y deducir, ya que no requiere descubrir "el truco matemático oculto" para coordinar las prioridades de los borrados; la DP encuentra la combinación óptima de forma natural explorando inteligentemente el espacio de soluciones.
 
 ## Referencias
-N/A
+* **GeeksforGeeks.** [Dynamic Programming](https://www.geeksforgeeks.org/dynamic-programming/). Artículo detallado sobre los principios y aplicaciones de la programación dinámica.
+* **Diccionario de memoria (Memoization):** Referencia interna a la estructura [Map](../../grimorio/data-structures/map.md) utilizada para evitar el recálculo del árbol de decisiones.
